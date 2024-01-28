@@ -63,8 +63,42 @@ GENERATE_NUMBER() {
 }
 
 # Initial Guessing Game
+
+GUESSES=0 # Used for the actual game
+
 GAME() {
-    echo "Guessing Game"
+    # Message/Status
+    if [[ $1 ]]
+    then 
+        echo $1
+    fi
+
+    read GUESS
+
+    # If it's not an integer
+    if [[ ! $GUESS =~ ^[0-9]+$ ]]
+    then
+        GUESSES=$(( $GUESSES + 1 ))
+        GAME "That is not an integer, guess again:"
+        return
+    
+    # If it's lower than the random number
+    elif [[ $GUESS -lt $RANDOM_NUMBER ]]
+    then
+        GUESSES=$(( $GUESSES + 1 ))
+        GAME "It's higher than that, guess again:"
+        return
+
+    # If it's higher than the random number
+    elif [[ $GUESS -gt $RANDOM_NUMBER ]]
+    then
+        GUESSES=$(( $GUESSES + 1 ))
+        GAME "It's lower than that, guess again:"
+        return
+    fi
+
+    # If user guessed the number
+    GUESSED 
 }
 
 # Outputs the results of the game after the user guessed the number
