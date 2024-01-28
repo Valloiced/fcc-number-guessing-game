@@ -59,12 +59,12 @@ WELCOME() {
 # Generates a guessing number from 1 to 1000
 GENERATE_NUMBER() {
     # Added one to avoid that 1/1000 chance of getting 0
-    RANDOM_NUMBER=$(( $RANDOM % 1000 + 1 )) 
+    SECRET_NUMBER=$(( $RANDOM % 1000 + 1 )) 
 }
 
 # Initial Guessing Game
 
-GUESSES=0 # Used for the actual game
+NUMBER_OF_GUESSES=0 # Used for the actual game
 
 GAME() {
     # Message/Status
@@ -78,32 +78,44 @@ GAME() {
     # If it's not an integer
     if [[ ! $GUESS =~ ^[0-9]+$ ]]
     then
-        GUESSES=$(( $GUESSES + 1 ))
+        NUMBER_OF_GUESSES=$(( $NUMBER_OF_GUESSES + 1 ))
         GAME "That is not an integer, guess again:"
         return
     
     # If it's lower than the random number
-    elif [[ $GUESS -lt $RANDOM_NUMBER ]]
+    elif [[ $GUESS -lt $SECRET_NUMBER ]]
     then
-        GUESSES=$(( $GUESSES + 1 ))
+        NUMBER_OF_GUESSES=$(( $NUMBER_OF_GUESSES + 1 ))
         GAME "It's higher than that, guess again:"
         return
 
     # If it's higher than the random number
-    elif [[ $GUESS -gt $RANDOM_NUMBER ]]
+    elif [[ $GUESS -gt $SECRET_NUMBER ]]
     then
-        GUESSES=$(( $GUESSES + 1 ))
+        NUMBER_OF_GUESSES=$(( $NUMBER_OF_GUESSES + 1 ))
         GAME "It's lower than that, guess again:"
         return
+    else
+        # If user guessed the number
+        GUESSED 
     fi
 
-    # If user guessed the number
-    GUESSED 
 }
 
-# Outputs the results of the game after the user guessed the number
+# Outputs the results of the game after the user guessed the number and save it to the database
 GUESSED() {
-    echo "Guessed"
+    # Output the result
+    echo "You guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
+
+    # Save game data
+    SAVE_GAME_DATA=$($PSQL "INSERT INTO games(user_id, guesses) VALUES($USER_ID, $NUMBER_OF_GUESSES)");
+
+    if [[ $SAVE_GAME_DATA != 'INSERT 0 1' ]]
+    then
+        echo "Failed to save game data"
+    fi
+
+    exit
 }
 
 # START 
