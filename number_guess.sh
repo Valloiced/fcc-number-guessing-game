@@ -49,13 +49,17 @@ WELCOME() {
         echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
     fi
 
+    # Generate random number
+    GENERATE_NUMBER 
+
     # Start the game
     GAME "Guess the secret number between 1 and 1000:"
 }
 
 # Generates a guessing number from 1 to 1000
 GENERATE_NUMBER() {
-    echo "Generate Number" 
+    # Added one to avoid that 1/1000 chance of getting 0
+    RANDOM_NUMBER=$(( $RANDOM % 1000 + 1 )) 
 }
 
 # Initial Guessing Game
