@@ -64,7 +64,7 @@ GENERATE_NUMBER() {
 
 # Initial Guessing Game
 
-NUMBER_OF_GUESSES=0 # Used for the actual game
+NUMBER_OF_GUESSES=1 # Used for the actual game
 
 GAME() {
     # Message/Status
